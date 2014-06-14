@@ -161,30 +161,30 @@ public class DownloadService extends Service
             }
         }
 
-	/**
-	 * Create a file to store the result of a download.
-	 * 
-	 * @param context
-	 * @param url
-	 * @return
-	 * @throws IOException
-	 */
-	private File getTemporaryFile(final Context context,
+        /**
+         * Create a file to store the result of a download.
+         * 
+         * @param context
+         * @param url
+         * @return
+         * @throws IOException
+         */
+        private File getTemporaryFile(final Context context,
                                       final String url) throws IOException {
             return context.getFileStreamPath(Base64.encodeToString(url.getBytes(),
                                                                    Base64.NO_WRAP)
                                              + System.currentTimeMillis());
 	}
 
-	/**
-	 * Copy the contents of an InputStream into an OutputStream.
-	 * 
-	 * @param in
-	 * @param out
-	 * @return
-	 * @throws IOException
-	 */
-	private int copy(final InputStream in,
+        /**
+         * Copy the contents of an InputStream into an OutputStream.
+         * 
+         * @param in
+         * @param out
+         * @return
+         * @throws IOException
+         */
+        private int copy(final InputStream in,
                          final OutputStream out) throws IOException {
             final int BUFFER_LENGTH = 1024;
             final byte[] buffer = new byte[BUFFER_LENGTH];
@@ -199,14 +199,14 @@ public class DownloadService extends Service
             return totalRead;
 	}
 
-	/**
-	 * Download the requested image and return the local file path.
-	 * 
-	 * @param context
-	 * @param url
-	 * @return
-	 */
-	public String downloadImage(final Context context,
+        /**
+         * Download the requested image and return the local file path.
+         * 
+         * @param context
+         * @param url
+         * @return
+         */
+        public String downloadImage(final Context context,
                                     final String url) {
             try {
                 final File file = getTemporaryFile(context, url);
@@ -229,12 +229,13 @@ public class DownloadService extends Service
                 e.printStackTrace();
                 return null;
             }
-	}
+		}
 
         /**
          * Hook method that retrieves an image from a remote server.
          */
-        public void handleMessage(Message message) {
+        public void handleMessage(Message message)
+        {
             // Download the designated image and reply to the
             // DownloadActivity via the Messenger sent with the
             // Intent.
@@ -274,7 +275,7 @@ public class DownloadService extends Service
                               int flags,
                               int startId) {
         // Create a Message that will be sent to ServiceHandler to
-        // retrieve animagebased on the URI in the Intent.
+        // retrieve an handleMessageimage based on the URI in the Intent.
         Message message =
             mServiceHandler.makeDownloadMessage(intent,
                                                 startId);

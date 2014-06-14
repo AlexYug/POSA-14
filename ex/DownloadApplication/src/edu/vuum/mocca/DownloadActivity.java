@@ -130,7 +130,7 @@ public class DownloadActivity extends Activity {
         showDialog("downloading via startService()");
         
         // Create an Intent to download an image in the background via
-        // a Service.  The downloaded image is later diplayed in the
+        // a Service.  The downloaded image is later displayed in the
         // UI Thread via the downloadHandler() method defined below.
         Intent intent =
             DownloadService.makeIntent(this,
