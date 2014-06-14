@@ -14,14 +14,15 @@ public class Main
      */
     public static void main(String[] args) 
     {
-        /** 
-         * Initializes the Platform singleton with the appropriate
-         * PlatformStrategy, which in this case will be the
-         * ConsolePlatform.
-         */
-        PlatformStrategy.instance
-            (new PlatformStrategyFactory(System.out,
-                                         null).makePlatformStrategy());
+    	
+       /** 
+        * Initializes the Platform singleton with the appropriate
+        * PlatformStrategy, which in this case will be the
+        * ConsolePlatform.
+        */
+       PlatformStrategy.instance
+           (new PlatformStrategyFactory(System.out,
+                                        null).makePlatformStrategy());
 
         /** Initializes the Options singleton. */
         Options.instance().parseArgs(args);
