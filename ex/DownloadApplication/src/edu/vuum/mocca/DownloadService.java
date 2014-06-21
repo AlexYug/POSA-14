@@ -309,7 +309,6 @@ public class DownloadService extends Service
     }
     
     /**
-<<<<<<< HEAD
      * Hook method called when DownloadService is first launched by
      * the Android ActivityManager.
      */
