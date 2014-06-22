@@ -309,49 +309,10 @@ public class DownloadService extends Service
     }
     
     /**
-     * Hook method called when DownloadService is first launched by
-     * the Android ActivityManager.
-     */
-    public void onCreate() {
-        super.onCreate();
-        
-        // Create and start a background HandlerThread since by
-        // default a Service runs in the UI Thread, which we don't
-        // want to block.
-        HandlerThread thread =
-            new HandlerThread("DownloadService");
-        thread.start();
-        
-        // Get the HandlerThread's Looper and use it for our Handler.
-        mServiceLooper = thread.getLooper();
-        mServiceHandler =
-            new ServiceHandler(mServiceLooper);
-    }
+  }
 
     /**
-     * Hook method called each time a Started Service is sent an
-     * Intent via startService().
-     */
-    public int onStartCommand(Intent intent, 
-                              int flags,
-                              int startId) {
-        // Create a Message that will be sent to ServiceHandler to
-        // retrieve an handleMessageimage based on the URI in the Intent.
-        Message message =
-            mServiceHandler.makeDownloadMessage(intent,
-                                                startId);
-        
-        // Send the Message to ServiceHandler to retrieve an image
-        // based on contents of the Intent.
-        mServiceHandler.sendMessage(message);
-        
-        // Don't restart the DownloadService automatically if its
-        // process is killed while it's running.
-        return Service.START_NOT_STICKY;
-    }
-
-    /**
-     * Hook method called back to shutdown the Looper.
+      * Hook method called back to shutdown the Looper.
      */
     public void onDestroy() {
         mServiceLooper.quit();
