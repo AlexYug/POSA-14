@@ -2,6 +2,8 @@ package edu.vuum.mocca;
 
 import java.lang.ref.WeakReference;
 
+import android.content.Intent;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
@@ -65,7 +67,7 @@ public class DownloadActivity extends DownloadBase {
     	
     	// Handle any messages that get sent to this Handler
     	@Override
-        public void handleMessage(Message msg) {
+		public void handleMessage(Message msg) {
     		
             // Get an actual reference to the DownloadActivity
             // from the WeakReference.
@@ -78,6 +80,19 @@ public class DownloadActivity extends DownloadBase {
                 // bitmap that's been downloaded and returned to
                 // the DownloadActivity as a pathname who's Bundle
             	// key is defined by DownloadUtils.PATHNAME_KEY
+            	Bundle bundle = msg.getData();
+            	if(bundle == null)
+            	{
+            		// there is no data. Do nothing
+            		return;
+            	}
+            	String path = bundle.getString(DownloadUtils.PATHNAME_KEY);
+            	if(path == null)
+            	{
+            		// there is no path. Do nothing
+            		return;
+            	}
+            	activity.displayBitmap(path);
             }
     	}
     }
@@ -107,15 +122,21 @@ public class DownloadActivity extends DownloadBase {
             // TODO - You fill in here to start the
             // DownloadIntentService with the appropriate Intent
             // returned from the makeIntent() factory method.
-
-            which = "Starting DownloadIntentService";
+            {
+            	Intent intent=DownloadIntentService.makeIntent(this, handler, getUrlString());
+            	this.startService(intent);
+            }
+            which = "Starting IntentService";
             break;
         
         case R.id.thread_pool_button:
             // TODO - You fill in here to start the
             // ThreadPoolDownloadService with the appropriate Intent
             // returned from the makeIntent() factory method.
-
+            {
+            	Intent intent=ThreadPoolDownloadService.makeIntent(this, handler, getUrlString());
+            	this.startService(intent);
+            }
             which = "Starting ThreadPoolDownloadService";
             break;
         
