@@ -94,15 +94,7 @@ public class ThreadPoolDownloadService extends Service {
         // the uri in the intent and returns the file's pathname using
         // a Messenger who's Bundle key is defined by DownloadUtils.MESSENGER_KEY.
     	final Uri uri = intent.getData();
-    	if(uri == null)
-    	{
-    		return START_NOT_STICKY;
-    	}
     	final Messenger messenger = (Messenger)intent.getExtras().get(DownloadUtils.MESSENGER_KEY);
-    	if(messenger == null)
-    	{
-    		return START_NOT_STICKY;
-    	}
         Runnable downloadRunnable = new Runnable() {
 			@Override
         	public void run()
