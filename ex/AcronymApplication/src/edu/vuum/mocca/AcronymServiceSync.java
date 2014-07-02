@@ -35,6 +35,29 @@ public class AcronymServiceSync extends Service {
         AcronymServiceSync.class.getCanonicalName();
 
     /**
+     * Called when a client (e.g., AcronymActivity) calls
+     * bindService() with the proper Intent.  Returns the
+     * implementation of AcronymCall, which is implicitly cast as an
+     * IBinder.
+     */
+    @Override
+    public IBinder onBind(Intent intent) {
+        return mAcronymCallImpl;
+    }
+
+    /**
+     * Factory method that makes an Intent used to start the
+     * AcronymServiceSync when passed to bindService().
+     * 
+     * @param context
+     *            The context of the calling component.
+     */
+    public static Intent makeIntent(Context context) {
+        return new Intent(context,
+                          AcronymServiceSync.class);
+    }
+
+    /**
      * The concrete implementation of the AIDL Interface AcronymCall,
      * which extends the Stub class that implements AcronymCall,
      * thereby allowing Android to handle calls across process
@@ -58,7 +81,7 @@ public class AcronymServiceSync extends Service {
                 // Call the Acronym Web service to get the list of
                 // possible expansions of the designated acronym.
                 List<AcronymData> acronymResults = 
-                    DownloadUtils.getResults(acronym);
+                    AcronymDownloadUtils.getResults(acronym);
 
                 Log.d(TAG, "" + acronymResults.size() + " results for acronym: " + acronym);
 
@@ -67,27 +90,4 @@ public class AcronymServiceSync extends Service {
                 return acronymResults;
             }
 	};
-
-    /**
-     * Called when a client (e.g., AcronymActivity) calls
-     * bindService() with the proper Intent.  Returns the
-     * implementation of AcronymCall, which is implicitly cast as an
-     * IBinder.
-     */
-    @Override
-    public IBinder onBind(Intent intent) {
-        return mAcronymCallImpl;
-    }
-
-    /**
-     * Factory method that makes an Intent used to start the
-     * AcronymServiceSync when passed to bindService().
-     * 
-     * @param context
-     *            The context of the calling component.
-     */
-    public static Intent makeIntent(Context context) {
-        return new Intent(context,
-                          AcronymServiceSync.class);
-    }
 }
