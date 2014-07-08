@@ -3,6 +3,7 @@ package edu.vuum.mocca;
 import android.content.ComponentName;
 import android.content.ServiceConnection;
 import android.net.Uri;
+import android.os.Handler;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
@@ -37,6 +38,7 @@ import android.view.View;
  * communication.
  */
 public class DownloadActivity extends DownloadBase {
+    private Handler mHandler;
     /**
      * Used for debugging.
      */
@@ -57,7 +59,7 @@ public class DownloadActivity extends DownloadBase {
      * to the Service.
      */
     DownloadRequest mDownloadRequest;
-     
+
     /** 
      * This ServiceConnection is used to receive results after binding
      * to the DownloadServiceSync Service using bindService().
@@ -75,8 +77,9 @@ public class DownloadActivity extends DownloadBase {
                 // to a generated stub method that converts the
                 // service parameter into an interface that can be
                 // used to make RPC calls to the Service.
-
-                mDownloadCall = null;
+				Log.v(TAG, this.getClass().getSimpleName() + ".onServiceConnected()");
+				Log.v(TAG, "name = \"" + name.getClassName() + "\"");
+                mDownloadCall = DownloadCall.Stub.asInterface(service);
             }
 
             /**
@@ -108,8 +111,9 @@ public class DownloadActivity extends DownloadBase {
                 // to a generated stub method that converts the
                 // service parameter into an interface that can be
                 // used to make RPC calls to the Service.
-
-                mDownloadRequest = null;
+				Log.v(TAG, this.getClass().getSimpleName() + ".onServiceConnected()");
+				Log.v(TAG, "name = \"" + name.getClassName() + "\"");
+				mDownloadRequest = DownloadRequest.Stub.asInterface(service);
             }
 
             /**
@@ -144,8 +148,14 @@ public class DownloadActivity extends DownloadBase {
                 // image whose pathname is passed as a parameter to
                 // sendPath().  Please use displayBitmap() defined in
                 // DownloadBase.
-
-                Runnable displayRunnable = null;
+                Runnable displayRunnable = new Runnable() {
+					
+					@Override
+					public void run() {
+						displayBitmap(imagePathname);
+					}
+                };
+                mHandler.post(displayRunnable);
             }
         };
      
@@ -154,6 +164,7 @@ public class DownloadActivity extends DownloadBase {
      * res/layout/activity_download.xml)
      */
     public void runService(View view) {
+    	
         Uri uri = Uri.parse(getUrlString());
 
         hideKeyboard();
@@ -162,12 +173,26 @@ public class DownloadActivity extends DownloadBase {
         case R.id.bound_sync_button:
             // TODO - You fill in here to use mDownloadCall to
             // download the image & then display it.
+        	try {
+				String imagePath = mDownloadCall.downloadImage(uri);
+				displayBitmap(imagePath);
+			} catch (RemoteException e) {
+
+				Log.d(TAG,"Error while downloading \"" + uri + "\"");
+				e.printStackTrace();
+			}
             break;
 
         case R.id.bound_async_button:
             // TODO - You fill in here to call downloadImage() on
             // mDownloadRequest, passing in the appropriate Uri and
             // callback.
+        	try {
+				mDownloadRequest.downloadImage(uri, mDownloadCallback);
+			} catch (RemoteException e) {
+				Log.d(TAG,"Error while send download \"" + uri + "\" request.");
+				e.printStackTrace();
+			}
             break;
         }
     }
@@ -179,7 +204,12 @@ public class DownloadActivity extends DownloadBase {
     @Override
     public void onStart () {
     	super.onStart();
-    	
+
+    	if(mHandler == null)
+    	{
+    		mHandler = new Handler();
+    	}
+
     	// Bind this activity to the DownloadBoundService* Services if
     	// they aren't already bound Use mBoundSync/mBoundAsync
     	if (mDownloadCall == null) 
